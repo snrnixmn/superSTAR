@@ -1,4 +1,5 @@
 package com.example.superstar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -61,18 +62,15 @@ public class ModifyTaskActivity extends AppCompatActivity {
 
                 DBHelper dbh = new DBHelper(ModifyTaskActivity.this);
                 int totalScore = total.get(0);
-                int updatedScore = totalScore  + reward.getPoints();
+                int updatedScore = totalScore + reward.getPoints();
                 dbh.deleteSummary(reward.getId());
                 dbh.close();
 
                 DBHelper2 dbh2 = new DBHelper2(ModifyTaskActivity.this);
-                String chores = etChores.getText().toString();
+                dbh2.insertTotal(updatedScore);
+                dbh2.close();
 
-                if (!chores.isEmpty()) {
-                    dbh2.insertTotal(updatedScore);
-                }
-
-                setResult(DELETE_ITEM,  new Intent().putExtra("return", updatedScore));
+                setResult(DELETE_ITEM);
                 finish();
             }
         });

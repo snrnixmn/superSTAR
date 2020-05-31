@@ -82,6 +82,10 @@ public class ShowTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ShowTaskActivity.this, UseStarActivity.class);
+                int value = Integer.parseInt(tvTotalPoints.getText().toString());
+                ArrayList<Integer> valueAdded = new ArrayList<>();
+                valueAdded.add(value);
+                i.putExtra("score", valueAdded);
                 startActivityForResult(i, 3);
             }
         });
@@ -90,6 +94,9 @@ public class ShowTaskActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        int DELETE_ITEM = 1;
+        int STARS = 2;
 
         if (resultCode == RESULT_OK && requestCode == 1) {
 
@@ -111,7 +118,7 @@ public class ShowTaskActivity extends AppCompatActivity {
             ra.notifyDataSetChanged();
             db.close();
 
-        } else {
+        } else if (requestCode == DELETE_ITEM && requestCode == 3) {
 
             DBHelper db = new DBHelper(ShowTaskActivity.this);
             al.clear();
@@ -130,6 +137,25 @@ public class ShowTaskActivity extends AppCompatActivity {
 
             tvTotalPoints.setText(Integer.toString(score));
 
+
+        } else {
+
+            DBHelper db = new DBHelper(ShowTaskActivity.this);
+            al.clear();
+            al.addAll(db.getRewardSummary());
+            db.close();
+            lvTasks.setAdapter(ra);
+            ra.notifyDataSetChanged();
+            db.close();
+
+            DBHelper2 db2 = new DBHelper2(ShowTaskActivity.this);
+            arr = new ArrayList<>();
+            arr.addAll(db2.getTotal());
+
+            OverallReward tmp = arr.get(arr.size()-1);
+            int score = tmp.getTotalScores();
+
+            tvTotalPoints.setText(Integer.toString(score));
         }
     }
 }
